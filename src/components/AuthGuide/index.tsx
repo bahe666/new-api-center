@@ -23,6 +23,7 @@ export default function AuthGuide() {
     try {
       await navigator.clipboard.writeText(DEMO_TOKEN);
       setCopied(true);
+      window.dispatchEvent(new CustomEvent('auth-guide-token-copied'));
       setTimeout(() => setCopied(false), 1500);
     } catch {
       // fallback
@@ -33,6 +34,7 @@ export default function AuthGuide() {
       document.execCommand('copy');
       document.body.removeChild(ta);
       setCopied(true);
+      window.dispatchEvent(new CustomEvent('auth-guide-token-copied'));
       setTimeout(() => setCopied(false), 1500);
     }
   }, []);

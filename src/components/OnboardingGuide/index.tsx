@@ -2,75 +2,154 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { useModel, useLocation, history } from '@umijs/max';
 import './index.scss';
 
+/* ------------------------------------------------------------------ */
+/*  Types                                                             */
+/* ------------------------------------------------------------------ */
+
+type TriggerKind =
+  | { type: 'navigation'; pattern: RegExp }
+  | { type: 'event'; eventName: string }
+  | { type: 'poll'; check: () => boolean; interval?: number; timeout?: number }
+  | { type: 'manual' }; // advance via "下一步" button
+
 interface GuideStep {
+  /** CSS selector on the main page (null = centered card, no spotlight) */
   selector: string | null;
+  /** If target lives inside the iframe, the selector within the iframe */
   iframeSelector?: string;
+  /** Tooltip text */
   text: string;
-  preferPosition: 'right' | 'below' | 'above' | 'left' | 'center';
-  waitForNavigation?: boolean;
-  /** If true, highlight covers the whole visible page (light overlay, no spotlight) */
-  fullPage?: boolean;
-  /** Optional rich content rendered after text */
+  /** Preferred tooltip position relative to spotlight */
+  preferPosition: 'right' | 'left' | 'below' | 'above' | 'center';
+  /** How the step advances */
+  trigger: TriggerKind;
+  /** Optional rich JSX rendered after text */
   extra?: React.ReactNode;
+  /** Button label override (default: "下一步" or "完成") */
+  btnLabel?: string;
 }
 
-const LIST_STEPS: GuideStep[] = [
+/* ------------------------------------------------------------------ */
+/*  Step definitions                                                   */
+/* ------------------------------------------------------------------ */
+
+const STEPS: GuideStep[] = [
+  /* Step 1 — list page: highlight API table */
+  {
+    selector: '.product-page__table',
+    text: '点击任意一行 API 进入详情页',
+    preferPosition: 'above',
+    trigger: { type: 'navigation', pattern: /\/apis\/[^/]+\/[^/]+/ },
+  },
+  /* Step 2 — detail page: highlight copy button */
+  {
+    selector: '.auth-guide__copy-btn',
+    text: '点击「复制」获取 Bearer Token',
+    preferPosition: 'below',
+    trigger: { type: 'event', eventName: 'auth-guide-token-copied' },
+  },
+  /* Step 3 — detail page: highlight Bearer Token input in iframe */
+  {
+    selector: '.endpoint-page__iframe',
+    iframeSelector: '.col--5',
+    text: '将复制的 Token 粘贴到「Bearer Token」输入框中',
+    preferPosition: 'left',
+    trigger: {
+      type: 'poll',
+      check: () => {
+        try {
+          const iframe = document.querySelector(
+            '.endpoint-page__iframe',
+          ) as HTMLIFrameElement | null;
+          if (!iframe) return false;
+          const doc = iframe.contentDocument || iframe.contentWindow?.document;
+          if (!doc) return false;
+          const input = doc.querySelector(
+            'input[placeholder*="Bearer"], input[placeholder*="bearer"], input[placeholder*="Token"], input[placeholder*="token"]',
+          ) as HTMLInputElement | null;
+          return !!input && input.value.trim().length > 0;
+        } catch {
+          return false;
+        }
+      },
+      interval: 500,
+      timeout: 120_000,
+    },
+  },
+  /* Step 4 — detail page: highlight Send button in iframe */
+  {
+    selector: '.endpoint-page__iframe',
+    iframeSelector: '.col--5',
+    text: '点击「Send API Request」发起调用',
+    preferPosition: 'left',
+    trigger: {
+      type: 'poll',
+      check: () => {
+        try {
+          const iframe = document.querySelector(
+            '.endpoint-page__iframe',
+          ) as HTMLIFrameElement | null;
+          if (!iframe) return false;
+          const doc = iframe.contentDocument || iframe.contentWindow?.document;
+          if (!doc) return false;
+          const col5 = doc.querySelector('.col--5');
+          if (!col5) return false;
+          // Look for a response panel, "Response" text, or "Clear" button
+          const text = col5.textContent || '';
+          return (
+            /Response/i.test(text) &&
+            (doc.querySelector('.col--5 pre') !== null ||
+              doc.querySelector('.col--5 [class*="response"]') !== null ||
+              /Clear/i.test(text) ||
+              /\{/.test(text))
+          );
+        } catch {
+          return false;
+        }
+      },
+      interval: 500,
+      timeout: 30_000,
+    },
+  },
+  /* Step 5 — centered card: request succeeded */
   {
     selector: null,
-    fullPage: true,
-    text: '左侧切换产品，右侧查看接口列表，点击任意一行进入详情页。现在请点击一个 API 继续。',
+    text: '请求已成功发送！你可以在右侧查看返回结果。',
     preferPosition: 'center',
-    waitForNavigation: true,
+    trigger: { type: 'manual' },
   },
-];
-
-const DETAIL_STEPS: GuideStep[] = [
-  {
-    selector: '.endpoint-page__iframe',
-    iframeSelector: '.col--7',
-    text: '接口文档：左侧展示 API 的请求参数，包括参数名、数据类型和说明。下方还有响应格式（Response）的字段说明。',
-    preferPosition: 'right',
-  },
-  {
-    selector: '.endpoint-page__iframe',
-    iframeSelector: '.col--5',
-    text: '调试面板：右侧用于在线调试。顶部显示请求方法和路径，中间填入令牌和参数，底部可选择不同语言查看代码示例。',
-    preferPosition: 'left',
-  },
-  {
-    selector: '.auth-guide',
-    text: '获取令牌：在这里点击「复制」获取你的 Bearer Token。也可以点击链接前往控制台获取。',
-    preferPosition: 'below',
-  },
-  {
-    selector: '.endpoint-page__iframe',
-    iframeSelector: '.col--5',
-    text: '发起调试：将复制的 Token 粘贴到「Bearer Token」输入框，点击「Send API Request」即可发起调用，下方会实时显示返回结果。',
-    preferPosition: 'left',
-  },
+  /* Step 6 — centered card: AK/SK reminder */
   {
     selector: null,
     text: '正式接入请使用 AK/SK：Bearer Token 仅供在线调试，生产环境请前往控制台创建 AccessKey 进行签名认证。AK Secret 仅创建时显示，请妥善保存。',
     preferPosition: 'center',
+    trigger: { type: 'manual' },
     extra: (
       <a
         href="https://console.sensecore.cn/cn-sh-01/iam/Security/access-key"
         target="_blank"
         rel="noopener noreferrer"
-        className="onboarding-tooltip__link-btn"
+        className="onboarding-guide__link-btn"
       >
         前往获取 AK/SK
       </a>
     ),
   },
+  /* Step 7 — centered card: done */
   {
     selector: null,
     text: '了解完毕！如需再次查看可点击顶部「新手指引」。',
     preferPosition: 'center',
+    trigger: { type: 'manual' },
+    btnLabel: '完成',
   },
 ];
 
 const STORAGE_KEY = 'sensecore-guide-seen';
+
+/* ------------------------------------------------------------------ */
+/*  Geometry helpers                                                   */
+/* ------------------------------------------------------------------ */
 
 interface Rect {
   top: number;
@@ -90,7 +169,7 @@ function clampRect(r: Rect): Rect {
   };
 }
 
-function bestTooltipPosition(
+function tooltipPosition(
   target: Rect,
   prefer: string,
   tw: number,
@@ -125,63 +204,109 @@ function bestTooltipPosition(
   };
 }
 
+/* ------------------------------------------------------------------ */
+/*  Component                                                         */
+/* ------------------------------------------------------------------ */
+
 export default function OnboardingGuide() {
   const { guideOpen, setGuideOpen } = useModel('global');
   const location = useLocation();
-  const [phase, setPhase] = useState<'list' | 'detail'>('list');
+
   const [stepIdx, setStepIdx] = useState(0);
   const [targetRect, setTargetRect] = useState<Rect | null>(null);
   const [ready, setReady] = useState(false);
   const tooltipRef = useRef<HTMLDivElement>(null);
 
-  const steps = phase === 'list' ? LIST_STEPS : DETAIL_STEPS;
-  const step = steps[stepIdx];
-  const globalStepNum =
-    phase === 'list' ? stepIdx + 1 : LIST_STEPS.length + stepIdx + 1;
-  const totalSteps = LIST_STEPS.length + DETAIL_STEPS.length;
+  const step = STEPS[stepIdx];
+  const isInteractive = step?.trigger.type !== 'manual';
+  const isCentered = !step?.selector;
 
-  // Init: redirect to list page when guide opens
+  /* ---- Init: navigate to list page when guide opens ---- */
   useEffect(() => {
     if (!guideOpen) {
       setReady(false);
       return;
     }
-    const isDetail = location.pathname.match(/\/apis\/[^/]+\/[^/]+/);
-    if (isDetail) {
-      history.push('/apis/ecs');
-      const timer = setTimeout(() => {
-        setPhase('list');
-        setStepIdx(0);
-        setReady(true);
-      }, 600);
-      return () => clearTimeout(timer);
-    }
-    if (!location.pathname.startsWith('/apis/')) {
-      history.push('/apis/ecs');
-      const timer = setTimeout(() => {
-        setPhase('list');
-        setStepIdx(0);
-        setReady(true);
-      }, 600);
-      return () => clearTimeout(timer);
-    }
-    setReady(true);
-  }, [guideOpen]);
+    setStepIdx(0);
 
-  // Detect navigation from list to detail (Step 1 waitForNavigation)
+    if (!location.pathname.startsWith('/apis/') || location.pathname.match(/\/apis\/[^/]+\/[^/]+/)) {
+      history.push('/apis/ecs');
+      const timer = setTimeout(() => setReady(true), 600);
+      return () => clearTimeout(timer);
+    }
+
+    setReady(true);
+  }, [guideOpen]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  /* ---- Close helper ---- */
+  const handleClose = useCallback(() => {
+    setGuideOpen(false);
+    setStepIdx(0);
+    setReady(false);
+    localStorage.setItem(STORAGE_KEY, 'true');
+  }, [setGuideOpen]);
+
+  /* ---- Advance to next step ---- */
+  const advance = useCallback(() => {
+    if (stepIdx < STEPS.length - 1) {
+      setStepIdx((i) => i + 1);
+    } else {
+      handleClose();
+    }
+  }, [stepIdx, handleClose]);
+
+  /* ---- Trigger: navigation (Step 1) ---- */
   useEffect(() => {
     if (!guideOpen || !ready) return;
-    if (phase === 'list' && step?.waitForNavigation) {
-      if (location.pathname.match(/\/apis\/[^/]+\/[^/]+/)) {
-        setTimeout(() => {
-          setPhase('detail');
-          setStepIdx(0);
-        }, 600);
-      }
+    if (step?.trigger.type !== 'navigation') return;
+    const { pattern } = step.trigger;
+    if (pattern.test(location.pathname)) {
+      // Delay slightly so the detail page renders
+      const t = setTimeout(advance, 600);
+      return () => clearTimeout(t);
     }
-  }, [location.pathname, guideOpen, ready, phase, step]);
+  }, [location.pathname, guideOpen, ready, step, advance]);
 
-  // Measure target element rect
+  /* ---- Trigger: custom event (Step 2) ---- */
+  useEffect(() => {
+    if (!guideOpen || !ready) return;
+    if (step?.trigger.type !== 'event') return;
+    // Auto-expand auth guide card if collapsed
+    localStorage.removeItem('sensecore-auth-guide-collapsed');
+    const card = document.querySelector('.auth-guide');
+    if (card && !card.querySelector('.auth-guide__body')) {
+      const header = card.querySelector('.auth-guide__header') as HTMLElement;
+      header?.click();
+    }
+    const { eventName } = step.trigger;
+    const handler = () => {
+      // Small delay so "已复制" is visible
+      setTimeout(advance, 400);
+    };
+    window.addEventListener(eventName, handler);
+    return () => window.removeEventListener(eventName, handler);
+  }, [guideOpen, ready, step, advance]);
+
+  /* ---- Trigger: polling (Steps 3 & 4) ---- */
+  useEffect(() => {
+    if (!guideOpen || !ready) return;
+    if (step?.trigger.type !== 'poll') return;
+    const { check, interval = 500, timeout = 60_000 } = step.trigger;
+    const start = Date.now();
+    const id = window.setInterval(() => {
+      if (check()) {
+        window.clearInterval(id);
+        advance();
+      } else if (Date.now() - start > timeout) {
+        // Timeout: auto-advance so the user isn't stuck
+        window.clearInterval(id);
+        advance();
+      }
+    }, interval);
+    return () => window.clearInterval(id);
+  }, [guideOpen, ready, step, advance]);
+
+  /* ---- Measure target element rect ---- */
   const getRect = useCallback((): Rect | null => {
     if (!step?.selector) return null;
     const el = document.querySelector(step.selector) as HTMLElement;
@@ -200,17 +325,18 @@ export default function OnboardingGuide() {
           top: iRect.top + r.top,
           left: iRect.left + r.left,
           width: r.width,
-          height: Math.min(r.height, 300),
+          height: r.height,
         });
       } catch {
         return clampRect({
           top: iRect.top,
           left: iRect.left,
           width: iRect.width,
-          height: Math.min(iRect.height, 400),
+          height: iRect.height,
         });
       }
     }
+
     const rect = el.getBoundingClientRect();
     return clampRect({
       top: rect.top,
@@ -220,62 +346,44 @@ export default function OnboardingGuide() {
     });
   }, [step]);
 
+  /* Keep rect up-to-date */
   useEffect(() => {
     if (!guideOpen || !ready) return;
     const update = () => setTargetRect(getRect());
-    const timer = setTimeout(update, 200);
-    window.addEventListener('resize', update);
-    window.addEventListener('scroll', update, true);
+    // Initial measurement with a small delay for DOM readiness
+    const timer = setTimeout(update, 300);
+    const raf = () => {
+      update();
+      rafId = requestAnimationFrame(raf);
+    };
+    // Use rAF for smooth tracking (scroll / resize)
+    let rafId = requestAnimationFrame(raf);
     return () => {
       clearTimeout(timer);
-      window.removeEventListener('resize', update);
-      window.removeEventListener('scroll', update, true);
+      cancelAnimationFrame(rafId);
     };
-  }, [guideOpen, ready, phase, stepIdx, getRect]);
+  }, [guideOpen, ready, stepIdx, getRect]);
 
-  const handleClose = useCallback(() => {
-    setGuideOpen(false);
-    setPhase('list');
-    setStepIdx(0);
-    setReady(false);
-    localStorage.setItem(STORAGE_KEY, 'true');
-  }, [setGuideOpen]);
-
-  const handleNext = useCallback(() => {
-    if (step?.waitForNavigation) return;
-    if (stepIdx < steps.length - 1) {
-      setStepIdx((p) => p + 1);
-    } else if (phase === 'list') {
-      setPhase('detail');
-      setStepIdx(0);
-    } else {
-      handleClose();
-    }
-  }, [stepIdx, steps.length, phase, step, handleClose]);
-
+  /* ---- Render ---- */
   if (!guideOpen || !ready) return null;
 
-  const isLastStep = phase === 'detail' && stepIdx === DETAIL_STEPS.length - 1;
-  const isFullPage = !!step?.fullPage;
-  const isCentered = !step?.selector || !targetRect;
-  const isWaiting = !!step?.waitForNavigation;
+  const hasSpotlight = !!step?.selector && !!targetRect;
+  const isLastStep = stepIdx === STEPS.length - 1;
 
   const tooltipW = 380;
   const tooltipH = 160;
-  const tooltipStyle: React.CSSProperties = isCentered
+  const tooltipStyle: React.CSSProperties = isCentered || !targetRect
     ? { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }
-    : bestTooltipPosition(targetRect!, step.preferPosition, tooltipW, tooltipH);
+    : tooltipPosition(targetRect, step.preferPosition, tooltipW, tooltipH);
 
-  const pad = 6;
+  const pad = 8;
 
   return (
-    <div
-      className={`onboarding-overlay${isWaiting ? ' onboarding-overlay--passthrough' : ''}${isFullPage ? ' onboarding-overlay--fullpage' : ''}`}
-      onClick={isWaiting ? undefined : handleClose}
-    >
-      {targetRect && !isCentered && !isFullPage && (
+    <div className="onboarding-guide" data-interactive={isInteractive || undefined}>
+      {/* Spotlight element — uses box-shadow to create the dark overlay */}
+      {hasSpotlight && (
         <div
-          className="onboarding-spotlight"
+          className="onboarding-guide__spotlight"
           style={{
             top: targetRect.top - pad,
             left: targetRect.left - pad,
@@ -284,28 +392,36 @@ export default function OnboardingGuide() {
           }}
         />
       )}
-      {(isCentered || isFullPage) && <div className="onboarding-overlay__dim" />}
+
+      {/* Full-screen dim for centered cards (no spotlight) */}
+      {!hasSpotlight && <div className="onboarding-guide__dim" />}
+
+      {/* Tooltip */}
       <div
         ref={tooltipRef}
-        className="onboarding-tooltip"
+        className="onboarding-guide__tooltip"
         style={tooltipStyle}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="onboarding-tooltip__step">
-          {globalStepNum}/{totalSteps}
+        <div className="onboarding-guide__step-num">
+          {stepIdx + 1}/{STEPS.length}
         </div>
-        <div className="onboarding-tooltip__text">{step.text}</div>
-        {step.extra && <div className="onboarding-tooltip__extra">{step.extra}</div>}
-        <div className="onboarding-tooltip__actions">
-          <button className="onboarding-tooltip__skip" onClick={handleClose}>
+        <div className="onboarding-guide__text">{step.text}</div>
+        {step.extra && <div className="onboarding-guide__extra">{step.extra}</div>}
+        <div className="onboarding-guide__actions">
+          <button className="onboarding-guide__skip" onClick={handleClose}>
             跳过
           </button>
-          {!isWaiting ? (
-            <button className="onboarding-tooltip__next" onClick={handleNext}>
-              {isLastStep ? '完成' : '下一步'}
+          {step.trigger.type === 'manual' ? (
+            <button className="onboarding-guide__next" onClick={advance}>
+              {step.btnLabel || (isLastStep ? '完成' : '下一步')}
             </button>
           ) : (
-            <span className="onboarding-tooltip__waiting">请点击 API 接口 ↑</span>
+            <span className="onboarding-guide__waiting">
+              {step.trigger.type === 'navigation'
+                ? '请点击 API 继续...'
+                : '等待操作完成...'}
+            </span>
           )}
         </div>
       </div>
