@@ -48,13 +48,6 @@ export default function ProductPage() {
     <div className="product-page">
       <ApiSidebar currentProductId={product.id} />
       <main className="product-page__content">
-        {/* Breadcrumb */}
-        <div className="product-page__breadcrumb">
-          <span className="product-page__breadcrumb-current">
-            {product.name}
-          </span>
-        </div>
-
         {/* Product header */}
         <div className="product-page__header">
           <div className="product-page__header-left">
