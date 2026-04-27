@@ -34,11 +34,11 @@ interface GuideStep {
 /* ------------------------------------------------------------------ */
 
 const STEPS: GuideStep[] = [
-  /* Step 1 — list page: highlight API table */
+  /* Step 1 — list page: highlight entire product page (sidebar + table) */
   {
-    selector: '.product-page__table',
+    selector: '.product-page',
     text: '欢迎使用 SenseCore API 中心！左侧是产品导航，点击展开查看 API 列表；右侧是接口详情表格。请点击任意一行 API 进入详情页。',
-    preferPosition: 'above',
+    preferPosition: 'center',
     trigger: { type: 'navigation', pattern: /\/apis\/[^/]+\/[^/]+/ },
     btnLabel: '请点击 API 继续...',
   },
