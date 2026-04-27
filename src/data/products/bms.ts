@@ -1,0 +1,140 @@
+import type { ApiProduct } from '@/types/api';
+
+const BASE_URL = 'https://console.sensecore.cn/micro/help/docs/API';
+
+export const bms: ApiProduct = {
+  id: 'bms',
+  name: '弹性裸金属服务器 BMS',
+  abbreviation: 'BMS',
+  description: '高性能裸金属服务器实例管理',
+  category: 'compute',
+  groups: [
+    {
+      name: '实例管理',
+      endpoints: [
+        {
+          id: 'bms-start-instance',
+          displayName: '启动裸金属实例',
+          description: '启动裸金属实例',
+          method: 'POST',
+          path: '/bms/v1/instances/{instanceId}/start',
+          detailUrl: `${BASE_URL}/bms/start-instance`,
+        },
+        {
+          id: 'bms-get-instance',
+          displayName: '获取裸金属实例详情',
+          description: '获取裸金属实例详情',
+          method: 'GET',
+          path: '/bms/v1/instances/{instanceId}',
+          detailUrl: `${BASE_URL}/bms/get-instance`,
+        },
+        {
+          id: 'bms-list-instances',
+          displayName: '列举裸金属实例',
+          description: '列举裸金属实例',
+          method: 'GET',
+          path: '/bms/v1/instances',
+          detailUrl: `${BASE_URL}/bms/list-instances`,
+        },
+        {
+          id: 'bms-restart-instance',
+          displayName: '重启裸金属实例',
+          description: '重启裸金属实例',
+          method: 'POST',
+          path: '/bms/v1/instances/{instanceId}/restart',
+          detailUrl: `${BASE_URL}/bms/restart-instance`,
+        },
+        {
+          id: 'bms-reset-password',
+          displayName: '重置裸金属实例密码',
+          description: '重置裸金属实例密码',
+          method: 'POST',
+          path: '/bms/v1/instances/{instanceId}/reset-password',
+          detailUrl: `${BASE_URL}/bms/reset-password`,
+        },
+        {
+          id: 'bms-stop-instance',
+          displayName: '关机裸金属实例',
+          description: '关机裸金属实例',
+          method: 'POST',
+          path: '/bms/v1/instances/{instanceId}/stop',
+          detailUrl: `${BASE_URL}/bms/stop-instance`,
+        },
+      ],
+    },
+    {
+      name: '密钥对',
+      endpoints: [
+        {
+          id: 'bms-bind-keypair',
+          displayName: '绑定密钥对',
+          description: '绑定密钥对',
+          method: 'POST',
+          path: '/bms/v1/keypairs/bind',
+          detailUrl: `${BASE_URL}/bms/bind-keypair`,
+        },
+        {
+          id: 'bms-create-keypair',
+          displayName: '创建密钥对',
+          description: '创建密钥对',
+          method: 'POST',
+          path: '/bms/v1/keypairs',
+          detailUrl: `${BASE_URL}/bms/create-keypair`,
+        },
+        {
+          id: 'bms-delete-keypair',
+          displayName: '删除密钥对',
+          description: '删除密钥对',
+          method: 'DELETE',
+          path: '/bms/v1/keypairs/{keypairId}',
+          detailUrl: `${BASE_URL}/bms/delete-keypair`,
+        },
+        {
+          id: 'bms-get-keypair',
+          displayName: '获取密钥对',
+          description: '获取密钥对',
+          method: 'GET',
+          path: '/bms/v1/keypairs/{keypairId}',
+          detailUrl: `${BASE_URL}/bms/get-keypair`,
+        },
+        {
+          id: 'bms-unbind-keypair',
+          displayName: '解绑密钥对',
+          description: '解绑密钥对',
+          method: 'POST',
+          path: '/bms/v1/keypairs/unbind',
+          detailUrl: `${BASE_URL}/bms/unbind-keypair`,
+        },
+      ],
+    },
+    {
+      name: '云助手',
+      endpoints: [
+        {
+          id: 'bms-batch-create-assistant-tasks',
+          displayName: '批量创建云助手任务',
+          description: '批量创建云助手任务',
+          method: 'POST',
+          path: '/bms/v1/assistant-tasks/batch',
+          detailUrl: `${BASE_URL}/bms/batch-create-assistant-tasks`,
+        },
+        {
+          id: 'bms-get-assistant-task',
+          displayName: '查看云助手任务详情',
+          description: '查看云助手任务详情',
+          method: 'GET',
+          path: '/bms/v1/assistant-tasks/{taskId}',
+          detailUrl: `${BASE_URL}/bms/get-assistant-task`,
+        },
+        {
+          id: 'bms-list-assistant-tasks',
+          displayName: '获取云助手任务列表',
+          description: '获取云助手任务列表',
+          method: 'GET',
+          path: '/bms/v1/assistant-tasks',
+          detailUrl: `${BASE_URL}/bms/list-assistant-tasks`,
+        },
+      ],
+    },
+  ],
+};

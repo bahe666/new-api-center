@@ -1,0 +1,255 @@
+// =============================================================================
+// Global Styles — API Center Portal
+// =============================================================================
+@use 'variables' as *;
+
+// =============================================================================
+// CSS Custom Properties
+// =============================================================================
+:root {
+  // Backgrounds
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  --bg-code: #1e1e2e;
+  --bg-hover: #f1f5f9;
+  --bg-nav: rgba(255, 255, 255, 0.95);
+
+  // Text
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #94a3b8;
+  --text-link: #{$color-primary-400};
+
+  // Borders
+  --border-color: #e2e8f0;
+  --border-light: #f1f5f9;
+
+  // Brand
+  --color-primary: #{$color-primary-400};
+
+  // Method colors (exposed as custom properties for dynamic use)
+  --color-get: #{$color-method-get};
+  --color-post: #{$color-method-post};
+  --color-put: #{$color-method-put};
+  --color-delete: #{$color-method-delete};
+  --color-patch: #{$color-method-patch};
+
+  // Category colors
+  --color-compute: #{$color-category-compute};
+  --color-ai-ml: #{$color-category-ai-ml};
+  --color-containers: #{$color-category-containers};
+  --color-storage: #{$color-category-storage};
+  --color-networking: #{$color-category-networking};
+}
+
+// =============================================================================
+// Global Reset
+// =============================================================================
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+// =============================================================================
+// Body
+// =============================================================================
+body {
+  font-family: $font-body;
+  font-size: $font-size-base;
+  line-height: $line-height-relaxed;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  min-height: 100vh;
+}
+
+// =============================================================================
+// Typography
+// =============================================================================
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: $font-heading;
+  font-weight: $font-weight-semibold;
+  line-height: $line-height-tight;
+  color: var(--text-primary);
+}
+
+h1 {
+  font-size: $font-size-4xl;
+}
+
+h2 {
+  font-size: $font-size-3xl;
+}
+
+h3 {
+  font-size: $font-size-2xl;
+}
+
+h4 {
+  font-size: $font-size-xl;
+}
+
+h5 {
+  font-size: $font-size-lg;
+}
+
+h6 {
+  font-size: $font-size-base;
+}
+
+p {
+  margin-bottom: $spacing-4;
+  color: var(--text-secondary);
+}
+
+// Links
+a {
+  color: var(--text-link);
+  text-decoration: none;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: $color-primary-500;
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+// Lists
+ul,
+ol {
+  list-style: none;
+}
+
+// Images
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+// =============================================================================
+// Code & Pre
+// =============================================================================
+code {
+  font-family: $font-code;
+  font-size: 0.875em;
+  background-color: var(--bg-tertiary);
+  color: $color-primary-500;
+  padding: 0.15em 0.4em;
+  border-radius: $radius-sm;
+}
+
+pre {
+  background-color: var(--bg-code);
+  color: #e2e8f0;
+  padding: $spacing-4;
+  border-radius: $radius-md;
+  overflow-x: auto;
+  font-family: $font-code;
+  font-size: $font-size-sm;
+  line-height: $line-height-normal;
+
+  code {
+    background: none;
+    color: inherit;
+    padding: 0;
+    border-radius: 0;
+    font-size: inherit;
+  }
+}
+
+// =============================================================================
+// Scrollbar
+// =============================================================================
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: $radius-full;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.25);
+  }
+}
+
+// Firefox scrollbar
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+}
+
+// =============================================================================
+// Form elements baseline
+// =============================================================================
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+// =============================================================================
+// Utility Classes
+// =============================================================================
+
+// Centered container
+.container {
+  max-width: $content-max-width;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: $spacing-6;
+  padding-right: $spacing-6;
+
+  @include respond-to('sm') {
+    padding-left: $spacing-4;
+    padding-right: $spacing-4;
+  }
+}
+
+// Screen reader only
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

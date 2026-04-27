@@ -1,0 +1,191 @@
+@use '@/styles/variables' as *;
+
+.api-sidebar {
+  width: $sidebar-width;
+  flex-shrink: 0;
+  background: #fafbfc;
+  border-right: 1px solid var(--border-color);
+  position: sticky;
+  top: $nav-height;
+  max-height: calc(100vh - #{$nav-height});
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  z-index: $z-sticky;
+
+  @include respond-to('lg') {
+    display: none;
+  }
+
+  // Search
+  &__search {
+    padding: $spacing-3 $spacing-3;
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+  }
+
+  &__search-input {
+    width: 100%;
+    padding: $spacing-2 $spacing-3;
+    font-size: $font-size-xs;
+    border: 1px solid var(--border-color);
+    border-radius: $radius-md;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color $transition-fast;
+
+    &::placeholder {
+      color: var(--text-tertiary);
+    }
+
+    &:focus {
+      border-color: $color-primary-400;
+      box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.1);
+    }
+  }
+
+  // Navigation
+  &__nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: $spacing-2 0;
+  }
+
+  // Product item
+  &__product {
+    &--expanded {
+      background: rgba(67, 97, 238, 0.02);
+    }
+  }
+
+  &__product-row {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    padding: $spacing-2 $spacing-3;
+    font-size: $font-size-xs;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: background-color $transition-fast, color $transition-fast;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+
+    &--active {
+      color: var(--text-primary);
+      font-weight: $font-weight-medium;
+      background: rgba(67, 97, 238, 0.06);
+
+      &:hover {
+        background: rgba(67, 97, 238, 0.08);
+      }
+    }
+  }
+
+  &__product-arrow {
+    flex-shrink: 0;
+    width: 12px;
+    font-size: 10px;
+    color: var(--text-tertiary);
+    text-align: center;
+    line-height: 1;
+  }
+
+  &__product-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 3px;
+    color: #fff;
+    font-size: 8px;
+    font-weight: $font-weight-bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    letter-spacing: 0.02em;
+    font-family: $font-code;
+  }
+
+  &__product-name {
+    flex: 1;
+    min-width: 0;
+    @include truncate(1);
+  }
+
+  &__product-count {
+    flex-shrink: 0;
+    font-size: 10px;
+    color: var(--text-tertiary);
+    background: var(--bg-tertiary);
+    padding: 0 5px;
+    border-radius: $radius-full;
+    line-height: 1.6;
+  }
+
+  // Expanded tree
+  &__tree {
+    padding-bottom: $spacing-2;
+  }
+
+  &__group {
+    margin-bottom: $spacing-1;
+  }
+
+  &__group-label {
+    padding: $spacing-1 $spacing-4;
+    padding-left: calc(12px + #{$spacing-2} + 22px + #{$spacing-2} + #{$spacing-3});
+    font-size: 11px;
+    font-weight: $font-weight-semibold;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__endpoint-list {
+    list-style: none;
+  }
+
+  &__endpoint-link {
+    display: block;
+    padding: $spacing-1 $spacing-3;
+    padding-left: calc(12px + #{$spacing-2} + 22px + #{$spacing-2} + #{$spacing-3} + #{$spacing-3});
+    font-size: $font-size-xs;
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    transition: background-color $transition-fast, color $transition-fast,
+      border-color $transition-fast;
+    line-height: $line-height-normal;
+
+    &:hover {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+
+    &--active {
+      background: #eef2ff;
+      color: $color-primary-400;
+      border-left-color: $color-primary-400;
+      font-weight: $font-weight-medium;
+
+      &:hover {
+        background: #eef2ff;
+        color: $color-primary-400;
+      }
+    }
+  }
+
+  // Empty state
+  &__empty {
+    padding: $spacing-6 $spacing-4;
+    text-align: center;
+    font-size: $font-size-xs;
+    color: var(--text-tertiary);
+  }
+}
