@@ -37,22 +37,40 @@ const STEPS: GuideStep[] = [
   /* Step 1 — list page: highlight API table */
   {
     selector: '.product-page__table',
-    text: '点击任意一行 API 进入详情页',
+    text: '欢迎使用 SenseCore API 中心！左侧是产品导航，点击展开查看 API 列表；右侧是接口详情表格。请点击任意一行 API 进入详情页。',
     preferPosition: 'above',
     trigger: { type: 'navigation', pattern: /\/apis\/[^/]+\/[^/]+/ },
+    btnLabel: '请点击 API 继续...',
   },
-  /* Step 2 — detail page: highlight copy button */
+  /* Step 2 — detail page: left column intro */
   {
-    selector: '.auth-guide__copy-btn',
-    text: '点击「复制」获取 Bearer Token',
-    preferPosition: 'below',
-    trigger: { type: 'event', eventName: 'auth-guide-token-copied' },
+    selector: '.endpoint-page__iframe',
+    iframeSelector: '.col--7',
+    text: '接口文档区：展示请求参数（参数名、类型、说明）及响应格式（Response）字段说明。',
+    preferPosition: 'right',
+    trigger: { type: 'manual' },
   },
-  /* Step 3 — detail page: highlight Bearer Token input in iframe */
+  /* Step 3 — detail page: right column intro */
   {
     selector: '.endpoint-page__iframe',
     iframeSelector: '.col--5',
-    text: '将复制的 Token 粘贴到「Bearer Token」输入框中',
+    text: '调试面板：填入 Token 后可直接调用 API。底部提供多种语言的代码示例。',
+    preferPosition: 'left',
+    trigger: { type: 'manual' },
+  },
+  /* Step 4 — detail page: copy token */
+  {
+    selector: '.auth-guide__copy-btn',
+    text: '点击「复制」获取 Bearer Token。',
+    preferPosition: 'below',
+    trigger: { type: 'event', eventName: 'auth-guide-token-copied' },
+    btnLabel: '等待操作完成...',
+  },
+  /* Step 5 — detail page: paste token into iframe input */
+  {
+    selector: '.endpoint-page__iframe',
+    iframeSelector: 'input[placeholder*="Bearer"], input[placeholder*="Token"]',
+    text: '将复制的 Token 粘贴到「Bearer Token」输入框中。',
     preferPosition: 'left',
     trigger: {
       type: 'poll',
@@ -65,9 +83,9 @@ const STEPS: GuideStep[] = [
           const doc = iframe.contentDocument || iframe.contentWindow?.document;
           if (!doc) return false;
           const input = doc.querySelector(
-            'input[placeholder*="Bearer"], input[placeholder*="bearer"], input[placeholder*="Token"], input[placeholder*="token"]',
+            'input[placeholder*="Bearer"], input[placeholder*="Token"]',
           ) as HTMLInputElement | null;
-          return !!input && input.value.trim().length > 0;
+          return !!(input && input.value.trim());
         } catch {
           return false;
         }
@@ -75,12 +93,13 @@ const STEPS: GuideStep[] = [
       interval: 500,
       timeout: 120_000,
     },
+    btnLabel: '等待操作完成...',
   },
-  /* Step 4 — detail page: highlight Send button in iframe */
+  /* Step 6 — detail page: click Send API Request */
   {
     selector: '.endpoint-page__iframe',
     iframeSelector: '.col--5',
-    text: '点击「Send API Request」发起调用',
+    text: '点击「Send API Request」发起调用。',
     preferPosition: 'left',
     trigger: {
       type: 'poll',
@@ -92,33 +111,25 @@ const STEPS: GuideStep[] = [
           if (!iframe) return false;
           const doc = iframe.contentDocument || iframe.contentWindow?.document;
           if (!doc) return false;
-          const col5 = doc.querySelector('.col--5');
-          if (!col5) return false;
-          // Look for a response panel, "Response" text, or "Clear" button
-          const text = col5.textContent || '';
-          return (
-            /Response/i.test(text) &&
-            (doc.querySelector('.col--5 pre') !== null ||
-              doc.querySelector('.col--5 [class*="response"]') !== null ||
-              /Clear/i.test(text) ||
-              /\{/.test(text))
-          );
+          return !!doc.querySelector('.mock-response');
         } catch {
           return false;
         }
       },
       interval: 500,
-      timeout: 30_000,
+      timeout: 120_000,
     },
+    btnLabel: '等待操作完成...',
   },
-  /* Step 5 — centered card: request succeeded */
+  /* Step 7 — detail page: response appeared */
   {
-    selector: null,
-    text: '请求已成功发送！你可以在右侧查看返回结果。',
-    preferPosition: 'center',
+    selector: '.endpoint-page__iframe',
+    iframeSelector: '.mock-response',
+    text: '调用结果已返回！右侧展示了 API 的响应数据。',
+    preferPosition: 'left',
     trigger: { type: 'manual' },
   },
-  /* Step 6 — centered card: AK/SK reminder */
+  /* Step 8 — centered card: AK/SK reminder */
   {
     selector: null,
     text: '正式接入请使用 AK/SK：Bearer Token 仅供在线调试，生产环境请前往控制台创建 AccessKey 进行签名认证。AK Secret 仅创建时显示，请妥善保存。',
@@ -135,11 +146,11 @@ const STEPS: GuideStep[] = [
       </a>
     ),
   },
-  /* Step 7 — centered card: done */
+  /* Step 9 — highlight floating guide button: done */
   {
-    selector: null,
-    text: '了解完毕！如需再次查看可点击顶部「新手指引」。',
-    preferPosition: 'center',
+    selector: '.guide-fab',
+    text: '了解完毕！后续可随时点击此按钮重新查看。',
+    preferPosition: 'above',
     trigger: { type: 'manual' },
     btnLabel: '完成',
   },
@@ -418,9 +429,9 @@ export default function OnboardingGuide() {
             </button>
           ) : (
             <span className="onboarding-guide__waiting">
-              {step.trigger.type === 'navigation'
+              {step.btnLabel || (step.trigger.type === 'navigation'
                 ? '请点击 API 继续...'
-                : '等待操作完成...'}
+                : '等待操作完成...')}
             </span>
           )}
         </div>
