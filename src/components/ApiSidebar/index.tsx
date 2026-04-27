@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
-import { history } from '@umijs/max';
+import { history, Link } from '@umijs/max';
 import { getAllProducts, getCategoryByProductId } from '@/data';
 import type { ApiProduct } from '@/types/api';
 import './index.scss';
@@ -71,7 +71,7 @@ export default function ApiSidebar({ currentProductId, currentEndpointId }: ApiS
   return (
     <aside className="api-sidebar">
       <div className="api-sidebar__title">
-        <span className="api-sidebar__title-text">SenseCore API 中心</span>
+        <Link to="/apis/ecs" className="api-sidebar__title-text">SenseCore API 中心</Link>
       </div>
       <div className="api-sidebar__search">
         <input
