@@ -19,6 +19,13 @@ export const ecs: ApiProduct = {
           method: 'GET',
           path: '/ecs/v1/instances',
           detailUrl: `${ECS_DOCS_BASE}/ecs-list-instances.html`,
+          docUrl: 'https://console.sensecore.cn/cn-sh-01/help/docs/cloud-foundation/compute/ecs/openAPI_V1/get-ecs-instance',
+          parameters: [
+            { name: 'PageNumber', type: 'number', required: false, description: '分页页码', placeholder: '1', defaultValue: '1' },
+            { name: 'PageSize', type: 'number', required: false, description: '每页数量', placeholder: '20', defaultValue: '20' },
+            { name: 'InstanceId', type: 'string', required: false, description: '实例 ID 过滤', placeholder: 'i-xxxxx' },
+            { name: 'Status', type: 'string', required: false, description: '实例状态过滤', placeholder: 'running' },
+          ],
         },
         {
           id: 'ecs-get-instance',
@@ -27,6 +34,10 @@ export const ecs: ApiProduct = {
           method: 'GET',
           path: '/ecs/v1/instances/{instanceId}',
           detailUrl: `${ECS_DOCS_BASE}/ecs-get-instance.html`,
+          docUrl: 'https://console.sensecore.cn/cn-sh-01/help/docs/cloud-foundation/compute/ecs/openAPI_V1/get-ecs-instance',
+          parameters: [
+            { name: 'InstanceId', type: 'string', required: true, description: '实例 ID', placeholder: 'i-3tiefmk...' },
+          ],
         },
         {
           id: 'ecs-start-instance',
@@ -35,6 +46,12 @@ export const ecs: ApiProduct = {
           method: 'POST',
           path: '/ecs/v1/instances/{instanceId}/start',
           detailUrl: `${ECS_DOCS_BASE}/ecs-start-instance.html`,
+          docUrl: 'https://console.sensecore.cn/cn-sh-01/help/docs/cloud-foundation/compute/ecs/openAPI_V1/start-instance',
+          parameters: [
+            { name: 'InstanceId', type: 'string', required: true, description: '实例 ID', placeholder: 'i-3tiefmk...' },
+            { name: 'DryRun', type: 'boolean', required: false, description: '是否只预检此次请求', placeholder: 'false', defaultValue: 'false' },
+            { name: 'ClientToken', type: 'string', required: false, description: '保证请求幂等性', placeholder: '幂等 Token（可选）' },
+          ],
         },
         {
           id: 'ecs-stop-instance',

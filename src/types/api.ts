@@ -23,6 +23,15 @@ export interface ApiGroup {
   endpoints: ApiEndpoint[];
 }
 
+export interface ApiParameter {
+  name: string;
+  type: 'string' | 'boolean' | 'number' | 'object' | 'array';
+  required: boolean;
+  description: string;
+  placeholder?: string;
+  defaultValue?: string;
+}
+
 export interface ApiEndpoint {
   id: string;
   displayName: string;
@@ -30,4 +39,6 @@ export interface ApiEndpoint {
   method: string;
   path: string;
   detailUrl: string;
+  docUrl?: string;
+  parameters?: ApiParameter[];
 }
