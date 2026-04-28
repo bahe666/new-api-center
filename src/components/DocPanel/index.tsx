@@ -37,6 +37,31 @@ export default function DocPanel({ endpoint, debugResult }: DocPanelProps) {
             className="doc-panel__iframe"
             src={endpoint.detailUrl}
             title={endpoint.displayName}
+            onLoad={(e) => {
+              try {
+                const doc = (e.target as HTMLIFrameElement).contentDocument;
+                if (doc) {
+                  const style = doc.createElement('style');
+                  style.textContent = `
+                    .sl-stack > .sl-panel:last-child,
+                    .sl-elements .HttpOperation > div:last-child,
+                    [class*="col--5"], [class*="col-5"],
+                    .TryItPanel, [class*="TryIt"],
+                    .sl-elements article > div > div:nth-child(2) {
+                      display: none !important;
+                    }
+                    .sl-elements article > div > div:first-child,
+                    [class*="col--7"], [class*="col-7"] {
+                      width: 100% !important;
+                      max-width: 100% !important;
+                      flex: 1 !important;
+                    }
+                    body { padding: 16px !important; }
+                  `;
+                  doc.head.appendChild(style);
+                }
+              } catch {}
+            }}
           />
         )}
         {activeTab === 'result' && (

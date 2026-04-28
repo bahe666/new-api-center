@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import './index.scss';
 
 interface ConsoleGuideProps {
@@ -5,9 +6,38 @@ interface ConsoleGuideProps {
 }
 
 export default function ConsoleGuide({ onClose }: ConsoleGuideProps) {
+  const [spotlightRect, setSpotlightRect] = useState<{ top: number; left: number; width: number; height: number } | null>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const docMenu = document.querySelector('.global-nav__doc-menu') || document.querySelector('.global-nav__link--doc');
+      if (docMenu) {
+        const rect = docMenu.getBoundingClientRect();
+        setSpotlightRect({
+          top: rect.top - 4,
+          left: rect.left - 6,
+          width: rect.width + 12,
+          height: rect.height + 8,
+        });
+      }
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div className="console-guide">
-      <div className="console-guide__overlay" />
+      {spotlightRect && (
+        <div
+          className="console-guide__spotlight"
+          style={{
+            top: spotlightRect.top,
+            left: spotlightRect.left,
+            width: spotlightRect.width,
+            height: spotlightRect.height,
+          }}
+        />
+      )}
+      {!spotlightRect && <div className="console-guide__overlay" />}
       <div className="console-guide__tooltip">
         <div className="console-guide__arrow" />
         <div className="console-guide__title">🎉 API 中心全新升级</div>

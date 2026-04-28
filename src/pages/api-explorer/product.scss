@@ -93,10 +93,10 @@
   }
 
   &__col {
-    &--name { width: 180px; }
-    &--desc { flex: 1; }
-    &--path { width: 220px; }
-    &--action { width: 80px; text-align: center; }
+    &--name { width: 160px; flex-shrink: 0; }
+    &--desc { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    &--path { width: 200px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    &--action { width: 80px; text-align: center; flex-shrink: 0; }
     &--bold { font-weight: 500; color: #1e293b; font-size: 13px; }
     &--secondary { color: #64748b; font-size: 12px; }
   }
