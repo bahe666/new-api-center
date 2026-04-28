@@ -1,0 +1,55 @@
+<h2>假控制台主页 + 引导弹窗</h2>
+<p class="subtitle">路由：/ — 每次访问触发引导，指向 API Explorer 新入口</p>
+
+<div class="mockup">
+  <div class="mockup-header">控制台主页（空壳）+ 引导弹窗</div>
+  <div class="mockup-body" style="padding: 0; height: 460px; display: flex; flex-direction: column; font-size: 11px; position: relative;">
+    <!-- Nav bar -->
+    <div style="height: 48px; background: #1a1a2e; display: flex; align-items: center; padding: 0 16px; gap: 24px; flex-shrink: 0; position: relative; z-index: 10;">
+      <span style="color: #fff; font-weight: 600; font-size: 14px;">SenseCore</span>
+      <span style="color: #94a3b8; font-size: 12px;">中国上海一区</span>
+      <span style="flex: 1;"></span>
+      <span style="color: #94a3b8; font-size: 11px; padding: 4px 10px;">官网</span>
+      <span style="color: #94a3b8; font-size: 11px; padding: 4px 10px;">费用</span>
+      <!-- Highlighted "文档" with guide pointing -->
+      <span style="color: #fff; font-size: 11px; padding: 4px 12px; border-radius: 4px; background: rgba(67,97,238,0.4); border: 2px solid #4361ee; position: relative; z-index: 1002;">
+        文档 ▾
+      </span>
+      <span style="color: #94a3b8; font-size: 11px; padding: 4px 10px;">👤</span>
+    </div>
+
+    <!-- Page body (empty console) -->
+    <div style="flex: 1; background: #f1f5f9; display: flex; align-items: center; justify-content: center;">
+      <div style="text-align: center; color: #94a3b8;">
+        <div style="font-size: 32px; margin-bottom: 8px;">🖥️</div>
+        <div style="font-size: 13px;">控制台主页</div>
+        <div style="font-size: 11px; margin-top: 4px;">（占位 — 无需实际内容）</div>
+      </div>
+    </div>
+
+    <!-- Dim overlay -->
+    <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000;"></div>
+
+    <!-- Guide tooltip pointing to "文档" -->
+    <div style="position: absolute; top: 56px; right: 100px; z-index: 1001; background: #fff; border-radius: 10px; padding: 16px 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.2); max-width: 300px;">
+      <!-- Arrow pointing up -->
+      <div style="position: absolute; top: -8px; right: 40px; width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-bottom: 8px solid #fff;"></div>
+      <div style="font-size: 13px; font-weight: 600; color: #1e293b; margin-bottom: 8px;">🎉 API 中心全新升级</div>
+      <div style="font-size: 12px; color: #475569; line-height: 1.6; margin-bottom: 12px;">
+        API Explorer 已迁移至导航栏「<strong style="color: #4361ee;">文档</strong>」菜单下。<br>
+        点击「文档 > API Explorer」即可在线调试所有云服务 API。
+      </div>
+      <div style="display: flex; justify-content: flex-end;">
+        <button style="padding: 6px 16px; background: #4361ee; color: #fff; border: none; border-radius: 5px; font-size: 12px; font-weight: 500; cursor: pointer;">知道了</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p style="margin-top: 16px; font-size: 13px; color: #64748b; line-height: 1.6;">
+  <strong>说明：</strong><br>
+  &bull; 访问 <code>/</code> 即为假控制台主页，页面本身无内容（仅导航栏 + 空白占位）<br>
+  &bull; 每次访问自动触发引导弹窗（demo 中每次都弹，生产环境仅首次登录触发）<br>
+  &bull; 弹窗用 spotlight 高亮导航栏「文档」按钮，配合遮罩 + 箭头指向<br>
+  &bull; 点击「知道了」关闭弹窗，用户可点击「文档 > API Explorer」进入调试台
+</p>
