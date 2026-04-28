@@ -1,70 +1,76 @@
+import { useState } from 'react';
+import { Link, useModel, history } from '@umijs/max';
 import './index.scss';
 
 export default function GlobalNav() {
+  const { isLoggedIn, logout } = useModel('global');
+  const [docDropdownOpen, setDocDropdownOpen] = useState(false);
+
   return (
     <header className="global-nav">
-      <div className="global-nav__top-bar" />
       <div className="global-nav__inner">
-        {/* Left section */}
         <div className="global-nav__left">
-          <button className="global-nav__hamburger" aria-label="菜单">
-            <span className="global-nav__hamburger-icon">&#9776;</span>
-          </button>
-
-          <div className="global-nav__brand">
+          <Link to="/" className="global-nav__brand">
             <div className="global-nav__logo-icon">
               <span className="global-nav__logo-dot global-nav__logo-dot--blue" />
               <span className="global-nav__logo-dot global-nav__logo-dot--green" />
               <span className="global-nav__logo-dot global-nav__logo-dot--orange" />
               <span className="global-nav__logo-dot global-nav__logo-dot--purple" />
             </div>
-            <div className="global-nav__logo-text">
-              <span className="global-nav__logo-title">大装置</span>
-              <span className="global-nav__logo-sub">sensecore</span>
-            </div>
-          </div>
-
-          <div className="global-nav__divider" />
-
-          <button className="global-nav__region">
-            中国上海一区 <span className="global-nav__region-arrow">&#9662;</span>
-          </button>
+            <span className="global-nav__logo-title">SenseCore</span>
+          </Link>
+          <span className="global-nav__region">中国上海一区</span>
         </div>
 
-        {/* Middle section */}
-        <div className="global-nav__center">
-          <div className="global-nav__announcement">
-            <span className="global-nav__announcement-icon">&#128226;</span>
-            <span className="global-nav__announcement-text">
-              体验 ModelStudio，助力大模型落地
-            </span>
-          </div>
-        </div>
-
-        {/* Right section */}
         <div className="global-nav__right">
-          <nav className="global-nav__links">
-            <span className="global-nav__link">官网</span>
-            <span className="global-nav__link">费用</span>
-            <span className="global-nav__link">资源</span>
-            <span className="global-nav__link">用户</span>
-            <span className="global-nav__link">文档</span>
-          </nav>
-
-          <div className="global-nav__divider" />
-
-          <div className="global-nav__icons">
-            <span className="global-nav__icon-btn" title="搜索">&#128269;</span>
-            <span className="global-nav__icon-btn" title="帮助">&#10067;</span>
-            <span className="global-nav__icon-btn" title="通知">&#128276;</span>
-            <span className="global-nav__icon-btn" title="语言">&#127760;</span>
+          <span className="global-nav__link">官网</span>
+          <span className="global-nav__link">费用</span>
+          <div
+            className="global-nav__doc-menu"
+            onMouseEnter={() => setDocDropdownOpen(true)}
+            onMouseLeave={() => setDocDropdownOpen(false)}
+          >
+            <span className="global-nav__link global-nav__link--doc">
+              文档 <span className="global-nav__arrow">▾</span>
+            </span>
+            {docDropdownOpen && (
+              <div className="global-nav__dropdown">
+                <a
+                  className="global-nav__dropdown-item"
+                  href="https://console.sensecore.cn/cn-sh-01/help"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  文档中心
+                </a>
+                <span
+                  className="global-nav__dropdown-item global-nav__dropdown-item--active"
+                  onClick={() => { history.push('/api-explorer'); setDocDropdownOpen(false); }}
+                >
+                  API Explorer
+                </span>
+                <span className="global-nav__dropdown-item global-nav__dropdown-item--disabled">
+                  统一命令行
+                </span>
+              </div>
+            )}
           </div>
 
           <div className="global-nav__divider" />
 
-          <div className="global-nav__avatar">
-            <span className="global-nav__avatar-circle">&#128100;</span>
-          </div>
+          {isLoggedIn ? (
+            <div className="global-nav__user">
+              <span className="global-nav__avatar-circle">U</span>
+              <span className="global-nav__logout" onClick={logout}>退出</span>
+            </div>
+          ) : (
+            <button
+              className="global-nav__login-btn"
+              onClick={() => history.push('/login')}
+            >
+              登录
+            </button>
+          )}
         </div>
       </div>
     </header>
