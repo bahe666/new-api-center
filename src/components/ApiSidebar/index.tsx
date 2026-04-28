@@ -42,7 +42,7 @@ export default function ApiSidebar({ currentProductId, currentEndpointId }: ApiS
       return next;
     });
     if (productId !== currentProductId) {
-      history.push(`/apis/${productId}`);
+      history.push(`/api-explorer/${productId}`);
     }
   }, [currentProductId]);
 
@@ -71,7 +71,7 @@ export default function ApiSidebar({ currentProductId, currentEndpointId }: ApiS
   return (
     <aside className="api-sidebar">
       <div className="api-sidebar__title">
-        <Link to="/apis/ecs" className="api-sidebar__title-text">SenseCore API 中心</Link>
+        <Link to="/api-explorer/ecs" className="api-sidebar__title-text">SenseCore API 中心</Link>
       </div>
       <div className="api-sidebar__search">
         <input
@@ -138,10 +138,10 @@ export default function ApiSidebar({ currentProductId, currentEndpointId }: ApiS
                             <li key={ep.id}>
                               <span
                                 className={`api-sidebar__endpoint-link${ep.id === currentEndpointId ? ' api-sidebar__endpoint-link--active' : ''}`}
-                                onClick={() => history.push(`/apis/${product.id}/${ep.id}`)}
+                                onClick={() => history.push(`/api-explorer/${product.id}/${ep.id}`)}
                                 role="link"
                                 tabIndex={0}
-                                onKeyDown={(e) => { if (e.key === 'Enter') history.push(`/apis/${product.id}/${ep.id}`); }}
+                                onKeyDown={(e) => { if (e.key === 'Enter') history.push(`/api-explorer/${product.id}/${ep.id}`); }}
                               >
                                 {ep.displayName}
                               </span>
