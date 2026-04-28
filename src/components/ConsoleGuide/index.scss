@@ -1,0 +1,71 @@
+@use '@/styles/variables' as *;
+
+.console-guide {
+  position: fixed;
+  inset: 0;
+  z-index: $z-modal;
+
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+  }
+
+  &__tooltip {
+    position: absolute;
+    top: 56px;
+    right: 120px;
+    background: #fff;
+    border-radius: $radius-lg;
+    padding: 20px 24px;
+    box-shadow: $shadow-xl;
+    max-width: 320px;
+    z-index: 1;
+  }
+
+  &__arrow {
+    position: absolute;
+    top: -8px;
+    right: 40px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid #fff;
+  }
+
+  &__title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 10px;
+  }
+
+  &__text {
+    font-size: 13px;
+    color: #475569;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  &__btn {
+    padding: 7px 20px;
+    background: $color-primary-400;
+    color: #fff;
+    border: none;
+    border-radius: $radius-md;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color $transition-fast;
+
+    &:hover {
+      background: $color-primary-500;
+    }
+  }
+}
