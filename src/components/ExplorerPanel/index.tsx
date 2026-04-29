@@ -28,8 +28,9 @@ export default function ExplorerPanel({ endpoint, productId }: ExplorerPanelProp
           padding: 0 !important;
         }
         /* Hide the code examples section (keep only the try-it form above) */
-        .sl-elements [class*="TryIt"] ~ div,
-        .sl-elements article > div > div:nth-child(2) > div:last-child {
+        .tabs-container, [class*="tabList_"], [class*="tabs-container"],
+        .sl-elements article > div > div:nth-child(2) > div > div:nth-child(4),
+        .sl-elements article > div > div:nth-child(2) > div > .tabs-container {
           display: none !important;
         }
         /* Clean up padding and layout */
@@ -49,21 +50,42 @@ export default function ExplorerPanel({ endpoint, productId }: ExplorerPanelProp
 
   return (
     <div className="explorer-panel">
-      {!isLoggedIn && (
-        <div className="explorer-panel__login-overlay" onClick={handleOverlayClick}>
-          <div className="explorer-panel__login-prompt">
-            <span className="explorer-panel__login-icon">🔒</span>
-            <span className="explorer-panel__login-text">登录后可使用 API 调试功能</span>
-            <button className="explorer-panel__login-btn">去登录</button>
+      <div className="explorer-panel__header">
+        <h2 className="explorer-panel__title">{endpoint.displayName}</h2>
+        <span className="explorer-panel__method">{endpoint.method}</span>
+        <code className="explorer-panel__path">{endpoint.path}</code>
+      </div>
+      <div className="explorer-panel__aksk-notice">
+        <span className="explorer-panel__aksk-icon">⚠️</span>
+        <span className="explorer-panel__aksk-text">
+          Bearer Token 仅供在线调试，正式接入请使用 AK/SK 签名认证。
+        </span>
+        <a
+          className="explorer-panel__aksk-link"
+          href="https://console.sensecore.cn/cn-sh-01/iam/Security/access-key"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          获取 AK/SK
+        </a>
+      </div>
+      <div className="explorer-panel__iframe-wrapper">
+        {!isLoggedIn && (
+          <div className="explorer-panel__login-overlay" onClick={handleOverlayClick}>
+            <div className="explorer-panel__login-prompt">
+              <span className="explorer-panel__login-icon">🔒</span>
+              <span className="explorer-panel__login-text">登录后可使用 API 调试功能</span>
+              <button className="explorer-panel__login-btn">去登录</button>
+            </div>
           </div>
-        </div>
-      )}
-      <iframe
-        className="explorer-panel__iframe"
-        src={endpoint.detailUrl}
-        title={`${endpoint.displayName} - 调试`}
-        onLoad={handleIframeLoad}
-      />
+        )}
+        <iframe
+          className="explorer-panel__iframe"
+          src={endpoint.detailUrl}
+          title={`${endpoint.displayName} - 调试`}
+          onLoad={handleIframeLoad}
+        />
+      </div>
     </div>
   );
 }

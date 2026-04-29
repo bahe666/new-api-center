@@ -14,6 +14,9 @@ const PARAMS_CSS = `
   [class*="col--5"] { display: none !important; }
   .sl-elements article > div > div:first-child,
   [class*="col--7"] { width: 100% !important; max-width: 100% !important; flex: 1 !important; }
+  /* Hide the API title (already shown in middle panel header) */
+  .sl-elements article > div > div:first-child > div > h2:first-child,
+  .sl-elements article > div > div:first-child > div > p:first-of-type { display: none !important; }
   body { margin: 0 !important; padding: 16px !important; overflow-x: hidden !important; }
   .sl-elements { padding: 0 !important; }
   #elements-container { padding: 0 !important; }
@@ -26,11 +29,15 @@ const CODE_CSS = `
   .sl-elements article > div > div:nth-child(2),
   [class*="col--5"] { width: 100% !important; max-width: 100% !important; flex: 1 !important; padding: 0 !important; }
   /* Hide the try-it form area, keep only code examples */
-  .sl-elements [class*="TryIt"],
-  .sl-elements article > div > div:nth-child(2) > div:first-child,
-  .sl-elements article > div > div:nth-child(2) > div:nth-child(2),
-  .sl-elements article > div > div:nth-child(2) > div:nth-child(3) {
+  .openapi-method-endpoint,
+  .details__demo-panel,
+  .sl-elements article > div > div:nth-child(2) > div > div:nth-child(1),
+  .sl-elements article > div > div:nth-child(2) > div > div:nth-child(2),
+  .sl-elements article > div > div:nth-child(2) > div > div:nth-child(3) {
     display: none !important;
+  }
+  .tabs-container, [class*="tabList_"], [class*="tabs-container"] {
+    display: block !important;
   }
   body { margin: 0 !important; padding: 16px !important; overflow-x: hidden !important; }
   .sl-elements { padding: 0 !important; }
@@ -97,23 +104,12 @@ export default function DocPanel({ endpoint }: DocPanelProps) {
 
       <div className="doc-panel__content">
         {activeTab === 'docs' ? (
-          <div className="doc-panel__docs-placeholder">
-            <div className="doc-panel__docs-icon">📄</div>
-            <h3 className="doc-panel__docs-title">{endpoint.displayName}</h3>
-            <p className="doc-panel__docs-desc">查看该 API 的详细使用文档、最佳实践和注意事项。</p>
-            {endpoint.docUrl ? (
-              <a
-                className="doc-panel__docs-link"
-                href={endpoint.docUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                前往帮助中心查看 →
-              </a>
-            ) : (
-              <span className="doc-panel__docs-disabled">文档暂未上线</span>
-            )}
-          </div>
+          <iframe
+            key={`docs-${endpoint.id}`}
+            className="doc-panel__iframe"
+            src={endpoint.detailUrl.replace('.html', '-doc.html')}
+            title={`${endpoint.displayName} - 文档说明`}
+          />
         ) : (
           <iframe
             key={`${activeTab}-${endpoint.id}`}

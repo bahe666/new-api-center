@@ -4,9 +4,77 @@
   flex: 2;
   display: flex;
   flex-direction: column;
-  position: relative;
   border-right: 1px solid #e2e8f0;
   min-width: 0;
+
+  &__header {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  &__title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+  }
+
+  &__method {
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    background: $color-primary-400;
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
+
+  &__path {
+    font-size: 12px;
+    color: #64748b;
+    font-family: $font-code;
+    background: none;
+    padding: 0;
+  }
+
+  &__aksk-notice {
+    padding: 8px 16px;
+    background: #fffbeb;
+    border-bottom: 1px solid #fcd34d;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  &__aksk-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  &__aksk-text {
+    color: #92400e;
+    flex: 1;
+  }
+
+  &__aksk-link {
+    color: $color-primary-400;
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+    &:hover { text-decoration: underline; }
+  }
+
+  &__iframe-wrapper {
+    flex: 1;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
 
   &__iframe {
     flex: 1;
@@ -37,14 +105,8 @@
     box-shadow: $shadow-lg;
   }
 
-  &__login-icon {
-    font-size: 28px;
-  }
-
-  &__login-text {
-    font-size: 13px;
-    color: #475569;
-  }
+  &__login-icon { font-size: 28px; }
+  &__login-text { font-size: 13px; color: #475569; }
 
   &__login-btn {
     padding: 7px 20px;
@@ -55,9 +117,6 @@
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
-
-    &:hover {
-      background: $color-primary-500;
-    }
+    &:hover { background: $color-primary-500; }
   }
 }
