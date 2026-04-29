@@ -40,7 +40,7 @@ export default function ConsoleGuide({ onClose }: ConsoleGuideProps) {
       {!spotlightRect && <div className="console-guide__overlay" />}
       <div className="console-guide__tooltip">
         <div className="console-guide__arrow" />
-        <div className="console-guide__title">🎉 API 中心全新升级</div>
+        <div className="console-guide__title">🎉 API Explorer 全新升级</div>
         <div className="console-guide__text">
           API Explorer 已迁移至导航栏「<strong>文档</strong>」菜单下。
           <br />

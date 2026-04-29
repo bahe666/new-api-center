@@ -71,7 +71,7 @@ export default function ApiSidebar({ currentProductId, currentEndpointId }: ApiS
   return (
     <aside className="api-sidebar">
       <div className="api-sidebar__title">
-        <Link to="/api-explorer/ecs" className="api-sidebar__title-text">SenseCore API 中心</Link>
+        <Link to="/api-explorer/ecs" className="api-sidebar__title-text">SenseCore API Explorer</Link>
       </div>
       <div className="api-sidebar__search">
         <input

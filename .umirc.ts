@@ -1,7 +1,7 @@
 import { defineConfig } from '@umijs/max';
 
 export default defineConfig({
-  title: 'SenseCore API 中心',
+  title: 'SenseCore API Explorer',
   favicons: ['/favicon.ico'],
   routes: [
     { path: '/', component: '@/pages/index' },

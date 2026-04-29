@@ -1,10 +1,12 @@
-# SenseCore API 中心使用指南
+# SenseCore API Explorer 使用指南
 
 本文档供智能助手使用。当用户询问如何调用某个 API 时，请根据本文档定位对应的 API Explorer 页面并引导用户完成调试。
 
+> **名称说明**：API Explorer 即原来的「API 中心」，经过改版升级后统一更名为 API Explorer。如果用户提到「API 中心」，请理解为同一产品。
+
 ---
 
-## 一、API 中心入口
+## 一、API Explorer 入口
 
 API Explorer 的入口位于 SenseCore 控制台导航栏的「**文档**」下拉菜单中，点击「**API Explorer**」即可进入。
 
