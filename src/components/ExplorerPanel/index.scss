@@ -4,186 +4,60 @@
   flex: 2;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
+  position: relative;
   border-right: 1px solid #e2e8f0;
+  min-width: 0;
 
-  &__header {
-    padding: 14px 20px;
-    border-bottom: 1px solid #e2e8f0;
+  &__iframe {
+    flex: 1;
+    border: none;
+    width: 100%;
+  }
+
+  &__login-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(2px);
+    z-index: 10;
     display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  &__login-prompt {
+    display: flex;
+    flex-direction: column;
     align-items: center;
     gap: 10px;
-    flex-shrink: 0;
-    background: #f8fafc;
+    padding: 24px 32px;
+    background: #fff;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-lg;
   }
 
-  &__method {
-    font-size: 12px;
-    font-weight: 700;
-    color: #fff;
-    background: $color-primary-400;
-    padding: 3px 8px;
-    border-radius: $radius-sm;
+  &__login-icon {
+    font-size: 28px;
   }
 
-  &__path {
+  &__login-text {
     font-size: 13px;
-    font-family: $font-code;
-    color: #334155;
+    color: #475569;
   }
 
-  &__body {
-    flex: 1;
-    padding: 16px 20px;
-  }
-
-  &__section {
-    margin-bottom: 20px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid #f1f5f9;
-
-    &:last-child {
-      border-bottom: none;
-    }
-  }
-
-  &__section-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12px;
-  }
-
-  &__section-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: #1e293b;
-    margin-bottom: 12px;
-
-    .explorer-panel__section-header & {
-      margin-bottom: 0;
-    }
-  }
-
-  &__auth {
-    background: #f8fafc;
-    border-radius: $radius-md;
-    padding: 12px 14px;
-  }
-
-  &__auth-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 8px;
-  }
-
-  &__auth-label {
-    font-size: 12px;
-    font-weight: 500;
-    color: #64748b;
-    min-width: 90px;
-  }
-
-  &__auth-input {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex: 1;
-  }
-
-  &__token {
-    font-size: 12px;
-    background: #e2e8f0;
-    padding: 4px 10px;
-    border-radius: $radius-sm;
-    color: #334155;
-  }
-
-  &__copy-btn {
-    font-size: 11px;
-    padding: 3px 10px;
+  &__login-btn {
+    padding: 7px 20px;
     background: $color-primary-400;
     color: #fff;
     border: none;
-    border-radius: $radius-sm;
+    border-radius: $radius-md;
+    font-size: 13px;
+    font-weight: 500;
     cursor: pointer;
-    transition: background-color $transition-fast;
-    white-space: nowrap;
 
     &:hover {
       background: $color-primary-500;
     }
-  }
-
-  &__auth-hint {
-    font-size: 11px;
-    color: #94a3b8;
-    margin-bottom: 6px;
-  }
-
-  &__aksk-link {
-    font-size: 12px;
-    color: $color-primary-400;
-    text-decoration: none;
-    font-weight: 500;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-
-  &__send-btn {
-    padding: 7px 16px;
-    background: #1e293b;
-    color: #fff;
-    border: none;
-    border-radius: $radius-md;
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color $transition-fast;
-
-    &:hover {
-      background: #334155;
-    }
-  }
-
-  &__request-info {
-    background: #f8fafc;
-    border-radius: $radius-md;
-    padding: 10px 14px;
-  }
-
-  &__info-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  &__info-label {
-    font-size: 11px;
-    background: #e2e8f0;
-    padding: 2px 8px;
-    border-radius: 3px;
-    color: #64748b;
-  }
-
-  &__info-value {
-    font-size: 12px;
-    color: #334155;
-    font-family: $font-code;
-  }
-
-  &__response {
-    font-family: $font-code;
-    font-size: 12px;
-    line-height: 1.6;
-    color: #e2e8f0;
-    background: #1e293b;
-    padding: 14px;
-    border-radius: $radius-md;
-    overflow-x: auto;
-    margin: 0;
   }
 }
