@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useModel, history } from '@umijs/max';
 import type { ApiEndpoint } from '@/types/api';
 import './index.scss';
@@ -9,6 +10,13 @@ interface ExplorerPanelProps {
 
 export default function ExplorerPanel({ endpoint, productId }: ExplorerPanelProps) {
   const { isLoggedIn } = useModel('global');
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText('sk-SenseCoreDemo-fake-token-12345');
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const handleIframeLoad = (e: React.SyntheticEvent<HTMLIFrameElement>) => {
     try {
@@ -56,18 +64,27 @@ export default function ExplorerPanel({ endpoint, productId }: ExplorerPanelProp
         <code className="explorer-panel__path">{endpoint.path}</code>
       </div>
       <div className="explorer-panel__aksk-notice">
-        <span className="explorer-panel__aksk-icon">⚠️</span>
-        <span className="explorer-panel__aksk-text">
-          Bearer Token 仅供在线调试，正式接入请使用 AK/SK 签名认证。
-        </span>
-        <a
-          className="explorer-panel__aksk-link"
-          href="https://console.sensecore.cn/cn-sh-01/iam/Security/access-key"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          获取 AK/SK
-        </a>
+        <div className="explorer-panel__token-row">
+          <span className="explorer-panel__token-label">Bearer Token:</span>
+          <code className="explorer-panel__token-value">sk-SenseCoreDemo***Token</code>
+          <button className="explorer-panel__copy-btn" onClick={handleCopy}>
+            {copied ? '已复制' : '复制'}
+          </button>
+        </div>
+        <div className="explorer-panel__aksk-row">
+          <span className="explorer-panel__aksk-icon">⚠️</span>
+          <span className="explorer-panel__aksk-text">
+            Token 仅供在线调试，正式接入请使用 AK/SK 签名认证。
+          </span>
+          <a
+            className="explorer-panel__aksk-link"
+            href="https://console.sensecore.cn/cn-sh-01/iam/Security/access-key"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            获取 AK/SK
+          </a>
+        </div>
       </div>
       <div className="explorer-panel__iframe-wrapper">
         {!isLoggedIn && (
