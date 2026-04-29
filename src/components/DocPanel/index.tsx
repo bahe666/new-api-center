@@ -15,8 +15,10 @@ const PARAMS_CSS = `
   .sl-elements article > div > div:first-child,
   [class*="col--7"] { width: 100% !important; max-width: 100% !important; flex: 1 !important; }
   /* Hide the API title (already shown in middle panel header) */
-  .sl-elements article > div > div:first-child > div > h2:first-child,
-  .sl-elements article > div > div:first-child > div > p:first-of-type { display: none !important; }
+  h2:first-of-type { display: none !important; }
+  h2:first-of-type + p { display: none !important; }
+  .sl-elements article > div > div:first-child > div > h2:first-child { display: none !important; }
+  .sl-elements article > div > div:first-child > div > h2:first-child + p { display: none !important; }
   body { margin: 0 !important; padding: 16px !important; overflow-x: hidden !important; }
   .sl-elements { padding: 0 !important; }
   #elements-container { padding: 0 !important; }
