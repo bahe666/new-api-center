@@ -109,6 +109,23 @@ export default function DocPanel({ endpoint }: DocPanelProps) {
             className="doc-panel__iframe"
             src={endpoint.detailUrl.replace('.html', '-doc.html')}
             title={`${endpoint.displayName} - 文档说明`}
+            onLoad={(e) => {
+              try {
+                const doc = (e.target as HTMLIFrameElement).contentDocument;
+                if (!doc) return;
+                const style = doc.createElement('style');
+                style.textContent = `
+                  /* Hide the title (shown in middle panel) */
+                  body > div > div > h1:first-child { display: none !important; }
+                  body > div > div > h1:first-child + p { display: none !important; }
+                  h1:first-child { display: none !important; }
+                  h1:first-child + p { display: none !important; }
+                  /* Fix relative links */
+                  a[href^="/micro/"] { pointer-events: none; color: #64748b; text-decoration: none; }
+                `;
+                doc.head.appendChild(style);
+              } catch {}
+            }}
           />
         ) : (
           <iframe
